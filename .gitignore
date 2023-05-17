@@ -1,3 +1,4 @@
-data/
+data_original/
 venv/
 .idea/
+data_processed/
