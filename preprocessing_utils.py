@@ -41,7 +41,7 @@ def remove_noise_convolution(signal):
     return signal_without_noise
 
 
-# TODO: doesn't work, should be fixed if we're going to use it
+# FIXME: if we're going to use it, for now ^ works
 def remove_noise_lowpass(signal):
     signal_ch1, signal_ch2 = signal[:, 0], signal[:, 1]
 
