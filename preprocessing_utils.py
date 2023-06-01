@@ -1,6 +1,7 @@
 import wfdb
-import numpy as np
 import bwr
+import scipy
+import numpy as np
 
 from wfdb import processing
 
@@ -21,6 +22,40 @@ def normalize_signal_and_center(signal):
     centered_signal = normalized_signal - signal_means
 
     return centered_signal
+
+
+def remove_noise_convolution(signal):
+    # Create a normalized Hanning window
+    # bigger windowSize = smoother curve
+    windowSize = 12
+    window = np.hanning(windowSize)
+    window = window / window.sum()
+
+    signal_ch1, signal_ch2 = signal[:, 0], signal[:, 1]
+
+    # Mode is set to 'valid' because it's less harmful to completely cut offa bit of the beginning and end of the signal
+    # than to produce something that doesn't make sense
+    signal_without_noise = np.column_stack((np.convolve(window, signal_ch1, mode='valid'),
+                                           np.convolve(window, signal_ch2, mode='valid')))
+
+    return signal_without_noise
+
+
+# TODO: doesn't work, should be fixed if we're going to use it
+def remove_noise_lowpass(signal):
+    signal_ch1, signal_ch2 = signal[:, 0], signal[:, 1]
+
+    cutoff = 2
+    fs = 200
+    nyq = 0.5 * fs
+    order = 2
+    normal_cutoff = cutoff / nyq
+    b, a = scipy.signal.butter(order, normal_cutoff, btype='low', analog=True)
+
+    signal_ch1, signal_ch2 = scipy.signal.filtfilt(b, a, signal_ch1), scipy.signal.filtfilt(b, a, signal_ch2)
+    signal_without_noise = np.column_stack((signal_ch1, signal_ch2))
+
+    return signal_without_noise
 
 
 def remove_baseline_wander_wavelets(signal):
