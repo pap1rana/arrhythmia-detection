@@ -41,18 +41,22 @@ def remove_noise_convolution(signal):
     return signal_without_noise
 
 
-# FIXME: if we're going to use it, for now ^ works
-def remove_noise_lowpass(signal):
+# TODO: check if this works as intended? plotting the result yields suspiciously flat curve
+def cutoff_freqs_fir_filter(signal):
     signal_ch1, signal_ch2 = signal[:, 0], signal[:, 1]
 
-    cutoff = 2
     fs = 200
-    nyq = 0.5 * fs
-    order = 2
-    normal_cutoff = cutoff / nyq
-    b, a = scipy.signal.butter(order, normal_cutoff, btype='low', analog=True)
+    nyquist = 0.5 * fs
+    # Lower cutoff frequency (Hz)
+    lowcut = 0.05
+    # Upper cutoff frequency (Hz)
+    highcut = 50
+    low = lowcut / nyquist
+    high = highcut / nyquist
+    numtaps = 101
+    b = scipy.signal.firwin(numtaps=numtaps, fs=fs, cutoff=[low, high], pass_zero=False)
 
-    signal_ch1, signal_ch2 = scipy.signal.filtfilt(b, a, signal_ch1), scipy.signal.filtfilt(b, a, signal_ch2)
+    signal_ch1, signal_ch2 = scipy.signal.lfilter(b, 1, signal_ch1), scipy.signal.lfilter(b, 1, signal_ch2)
     signal_without_noise = np.column_stack((signal_ch1, signal_ch2))
 
     return signal_without_noise
