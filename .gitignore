@@ -2,3 +2,5 @@ data_original/
 venv/
 .idea/
 data_processed/
+.ipynb_checkpoints/
+__pycache__/
