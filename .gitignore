@@ -4,3 +4,5 @@ venv/
 data_processed/
 .ipynb_checkpoints/
 __pycache__/
+pics/
+data_sliced_tda/

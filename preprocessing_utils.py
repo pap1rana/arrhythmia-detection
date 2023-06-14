@@ -53,7 +53,7 @@ def cutoff_freqs_fir_filter(signal):
     highcut = 50
     low = lowcut / nyquist
     high = highcut / nyquist
-    numtaps = 101
+    numtaps = 21
     b = scipy.signal.firwin(numtaps=numtaps, fs=fs, cutoff=[low, high], pass_zero=False)
 
     signal_ch1, signal_ch2 = scipy.signal.lfilter(b, 1, signal_ch1), scipy.signal.lfilter(b, 1, signal_ch2)
