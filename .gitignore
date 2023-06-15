@@ -7,3 +7,5 @@ __pycache__/
 pics/
 data_sliced_tda/
 *.csv
+models_raw/
+models_trained
